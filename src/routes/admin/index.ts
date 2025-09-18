@@ -52,21 +52,20 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// router.put('/:id', async (req: Request, res: Response) => {
-//   try {
-//     console.log('Updating admin with data:');
-//     const { id } = req.params;
-//     const { body } = req;
-//     if (!id) {
-//       return res.status(400).json({ message: 'Missing admin id parameter' });
-//     }
-//     const admin = await adminController.updateAdmin(id, body);
-//     res.json({ status: 200, data: admin });
-//   } catch (error) {
-//     console.error(error);
-//     const { status, message } =  handleError(error);
-//     res.status(status).json({ message });
-//   }
-// });
+router.put('/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { body } = req;
+    if (!id) {
+      return res.status(400).json({ message: 'Missing admin id parameter' });
+    }
+    const admin = await adminController.updateAdmin(id, body);
+    res.json({ status: 200, data: admin });
+  } catch (error) {
+    console.error(error);
+    const { status, message } =  handleError(error);
+    res.status(status).json({ message });
+  }
+});
 
 export default router;

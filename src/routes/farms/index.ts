@@ -5,6 +5,8 @@ import FarmController from '../../controllers/farmController.js';
 import { handleError } from '../../utils/errorUtils.js';
 import { authenticateToken } from '../../middlewares/auth.js';
 import { requireRole } from '../../middlewares/roles.js';
+import { farmSchema } from '../../validators/farm.js'
+import { formatZodErrors } from '../../utils/formatZodErrors.js';
 
 const router = Router();
 const farmController = new FarmController();
@@ -14,7 +16,10 @@ router.use(authenticateToken);
 router.post('/', requireRole('admin'), async (req: Request, res: Response) => {
   try {
     const { body } = req;
-    console.log('Creating farm with data:', body);
+    const parsed = farmSchema.safeParse(body);
+    if (!parsed.success) {
+      return res.status(400).json({ message: 'Payload inválido', errors: formatZodErrors(parsed.error) });
+    }
     const farm = await farmController.createFarm(body);
     res.json({ status: 200, data: farm });
   } catch (error) {
@@ -26,6 +31,7 @@ router.post('/', requireRole('admin'), async (req: Request, res: Response) => {
 router.get('/', requireRole('admin'), async (req: Request, res: Response) => {
   try {
     const { query } = req;
+    
     const farms = await farmController.getAllFarms(query);
     res.json({ status: 200, data: farms });
   } catch (error) {

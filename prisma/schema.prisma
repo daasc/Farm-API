@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("admin")
+  farms        Farm[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Farm {
+  id           String   @id @default(uuid())
+  name         String
+  location     String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  adminId      String
+  admin        Admin    @relation(fields: [adminId], references: [id])
+  pastures     Pasture[]
+}
+
+model Pasture {
+  id           String   @id @default(uuid())
+  farmId       String
+  name         String
+  cattleCount  Int
+  avgWeightKg  Float
+  category     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  farm         Farm     @relation(fields: [farmId], references: [id])
+  feedingRecords FeedingRecord[]
+}
+
+model FeedingRecord {
+  id                 String   @id @default(uuid())
+  pastureId          String
+  product            String
+  daysUsed           Int
+  feedKg             Float
+  consumptionPercentPV Float
+  createdAt          DateTime @default(now())
+  recordedAt         DateTime
+  pasture            Pasture  @relation(fields: [pastureId], references: [id])
+}

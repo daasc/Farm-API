@@ -1,4 +1,3 @@
-
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import AdminController from '../../controllers/adminController.js';
@@ -63,7 +62,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     res.json({ status: 200, data: admin });
   } catch (error) {
     console.error(error);
-    const { status, message } =  handleError(error);
+    const { status, message } = handleError(error);
     res.status(status).json({ message });
   }
 });

@@ -11,3 +11,11 @@ export interface FarmData {
   adminId: string;
   admin?: Admin;
 }
+
+export interface FarmInput {
+  name: string;
+  location: string;
+  email: string;
+  password: string;
+  adminId: string;
+}

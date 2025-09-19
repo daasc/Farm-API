@@ -8,6 +8,7 @@
     "test": "tests"
   },
   "scripts": {
+    "format": "prettier --write \"src/**/*.{ts,js,json}\" --log-level warn",
     "dev": "tsx src/server.ts",
     "dev:tsnode": "npx ts-node-esm src/server.ts",
     "build": "tsc",

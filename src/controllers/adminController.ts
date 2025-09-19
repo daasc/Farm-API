@@ -1,11 +1,10 @@
-import prisma from "../config/prisma.js";
-import { hashPassword } from "../utils/password.js";
-import { JWT_SECRET, REFRESH_TOKEN_SECRET } from "../config/index.js";
-import jwt from "jsonwebtoken";
-import { handleError } from "../utils/errorUtils.js";
+import prisma from '../config/prisma.js';
+import { hashPassword } from '../utils/password.js';
+import { JWT_SECRET, REFRESH_TOKEN_SECRET } from '../config/index.js';
+import jwt from 'jsonwebtoken';
+import { handleError } from '../utils/errorUtils.js';
 
 class AdminController {
-
   async getAdminById(id: string) {
     try {
       const admin = await prisma.admin.findUnique({
@@ -26,7 +25,10 @@ class AdminController {
     }
   }
 
-  async updateAdmin(id: string, data: { name?: string; email?: string; password?: string; role?: string }) {
+  async updateAdmin(
+    id: string,
+    data: { name?: string; email?: string; password?: string; role?: string },
+  ) {
     try {
       console.log('Updating admin:', id, data);
       const updateData: any = { ...data };
@@ -48,7 +50,7 @@ class AdminController {
       });
       return admin;
     } catch (error) {
-      console.log('error:', error)
+      console.log('error:', error);
       console.error(error);
       if (error.code === 'P2025') {
         return { status: 404, message: 'Admin not found' };
@@ -57,28 +59,22 @@ class AdminController {
     }
   }
   static tokenHandler(user: any) {
-    const role = user.role || "farm";
+    const role = user.role || 'farm';
     const payload = { id: user.id, role };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
-      expiresIn: "7d",
+      expiresIn: '7d',
     });
     return { token, refreshToken };
   }
-  async createUser(body: {
-    email: string;
-    password: string;
-    role?: string;
-    name?: string;
-  }) {
+  async createUser(body: { email: string; password: string; role?: string; name?: string }) {
     try {
       const { name, email, password, role } = body;
       const existingAdmin = await prisma.admin.findUnique({ where: { email } });
-      if (existingAdmin)
-        return { status: 409, message: "Email already in use" };
+      if (existingAdmin) return { status: 409, message: 'Email already in use' };
       const passwordHash = await hashPassword(password);
       const user = await prisma.admin.create({
-        data: { name, email, passwordHash, role: "admin" },
+        data: { name, email, passwordHash, role: 'admin' },
       });
       return AdminController.tokenHandler(user);
     } catch (error) {
@@ -95,23 +91,23 @@ class AdminController {
       pageSize?: number;
       search?: string;
       orderBy?: string;
-      order?: "asc" | "desc";
-    } = {}
+      order?: 'asc' | 'desc';
+    } = {},
   ) {
     try {
       const {
         page = 1,
         pageSize = 10,
-        search = "",
-        orderBy = "createdAt",
-        order = "desc",
+        search = '',
+        orderBy = 'createdAt',
+        order = 'desc',
       } = params;
 
       const where = search
         ? {
             OR: [
-              { name: { contains: search, mode: "insensitive" } },
-              { email: { contains: search, mode: "insensitive" } },
+              { name: { contains: search, mode: 'insensitive' } },
+              { email: { contains: search, mode: 'insensitive' } },
             ],
           }
         : {};

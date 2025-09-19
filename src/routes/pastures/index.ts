@@ -1,29 +1,27 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
-
-import FarmController from '../../controllers/farmController.js';
-import { handleError } from '../../utils/errorUtils.js';
+import PastureController from '../../controllers/pastureController.js';
+import { pastureSchema } from '../../validators/pasture.js';
+import { formatZodErrors } from '../../utils/formatZodErrors.js';
 import { authenticateToken } from '../../middlewares/auth.js';
 import { requireRole } from '../../middlewares/roles.js';
-import { farmSchema } from '../../validators/farm.js';
-import { formatZodErrors } from '../../utils/formatZodErrors.js';
+import { handleError } from '../../utils/errorUtils.js';
 
 const router = Router();
-const farmController = new FarmController();
+const pastureController = new PastureController();
 
 router.use(authenticateToken);
 
 router.post('/', requireRole('admin'), async (req: Request, res: Response) => {
+  const parsed = pastureSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res
+      .status(400)
+      .json({ message: 'Payload inválido', errors: formatZodErrors(parsed.error) });
+  }
   try {
-    const { body } = req;
-    const parsed = farmSchema.safeParse(body);
-    if (!parsed.success) {
-      return res
-        .status(400)
-        .json({ message: 'Payload inválido', errors: formatZodErrors(parsed.error) });
-    }
-    const farm = await farmController.createFarm(body);
-    res.json({ status: 200, data: farm });
+    const pasture = await pastureController.createPasture(parsed.data);
+    res.status(201).json(pasture);
   } catch (error) {
     const { status, message } = handleError(error);
     res.status(status).json({ message });
@@ -32,10 +30,8 @@ router.post('/', requireRole('admin'), async (req: Request, res: Response) => {
 
 router.get('/', requireRole('admin'), async (req: Request, res: Response) => {
   try {
-    const { query } = req;
-
-    const farms = await farmController.getAllFarms(query);
-    res.json({ status: 200, data: farms });
+    const pastures = await pastureController.getAllPastures(req.query);
+    res.json(pastures);
   } catch (error) {
     const { status, message } = handleError(error);
     res.status(status).json({ message });
@@ -46,10 +42,10 @@ router.get('/:id', requireRole('admin'), async (req: Request, res: Response) => 
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({ message: 'Missing farm id parameter' });
+      return res.status(400).json({ message: 'Missing pasture id parameter' });
     }
-    const farm = await farmController.getFarmById(id);
-    res.json({ status: 200, data: farm });
+    const pasture = await pastureController.getPastureById(id);
+    res.json(pasture);
   } catch (error) {
     const { status, message } = handleError(error);
     res.status(status).json({ message });
@@ -57,14 +53,19 @@ router.get('/:id', requireRole('admin'), async (req: Request, res: Response) => 
 });
 
 router.put('/:id', requireRole('admin'), async (req: Request, res: Response) => {
+  const parsed = pastureSchema.partial().safeParse(req.body);
+  if (!parsed.success) {
+    return res
+      .status(400)
+      .json({ message: 'Payload inválido', errors: formatZodErrors(parsed.error) });
+  }
   try {
     const { id } = req.params;
-    const { body } = req;
     if (!id) {
-      return res.status(400).json({ message: 'Missing farm id parameter' });
+      return res.status(400).json({ message: 'Missing pasture id parameter' });
     }
-    const farm = await farmController.updateFarm(id, body);
-    res.json({ status: 201, data: farm });
+    const pasture = await pastureController.updatePasture(id, req.body);
+    res.json(pasture);
   } catch (error) {
     const { status, message } = handleError(error);
     res.status(status).json({ message });
@@ -75,10 +76,10 @@ router.delete('/:id', requireRole('admin'), async (req: Request, res: Response) 
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({ message: 'Missing farm id parameter' });
+      return res.status(400).json({ message: 'Missing pasture id parameter' });
     }
-    await farmController.deleteFarm(id);
-    res.json({ status: 204, message: 'Farm deleted successfully' });
+    const result = await pastureController.deletePasture(id);
+    res.json(result);
   } catch (error) {
     const { status, message } = handleError(error);
     res.status(status).json({ message });

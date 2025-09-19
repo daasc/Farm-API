@@ -27,6 +27,25 @@ class FarmController {
     }
   }
 
+  async getFarmWithPasturesAndFeedingRecords(farmId: string) {
+    try {
+      const farm = await prisma.farm.findUnique({
+        where: { id: farmId },
+        include: {
+          pastures: {
+            include: {
+              feedingRecords: true,
+            },
+          },
+        },
+      });
+      if (!farm) throw { status: 404, message: 'Farm not found' };
+      return { message: 'Farm, pastures e feedingRecords encontrados', data: farm };
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+
   async getAllFarms(query: ListQuery) {
     try {
       const {

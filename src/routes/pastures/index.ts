@@ -12,6 +12,21 @@ const pastureController = new PastureController();
 
 router.use(authenticateToken);
 
+// Nova rota para buscar feedingRecords de um pasture
+router.get('/:id/feeding-records', requireRole('admin'), async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: 'Missing pasture id parameter' });
+    }
+    const result = await pastureController.getFeedingRecordsByPastureId(id);
+    res.json(result);
+  } catch (error) {
+    const { status, message } = handleError(error);
+    res.status(status).json({ message });
+  }
+});
+
 router.post('/', requireRole('admin'), async (req: Request, res: Response) => {
   const parsed = pastureSchema.safeParse(req.body);
   if (!parsed.success) {

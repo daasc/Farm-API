@@ -13,6 +13,20 @@ class PastureController {
     }
   }
 
+  async getFeedingRecordsByPastureId(pastureId: string) {
+    try {
+      const pasture = await prisma.pasture.findUnique({
+        where: { id: pastureId },
+        include: { feedingRecords: true },
+      });
+
+      if (!pasture) throw { status: 404, message: 'Pasture not found' };
+      return { message: 'FeedingRecords retrieved successfully', data: pasture };
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+
   async getAllPastures(query: ListQuery) {
     try {
       const {

@@ -42,6 +42,20 @@ router.get('/', requireRole('admin'), async (req: Request, res: Response) => {
   }
 });
 
+router.get('/:id/pastures', requireRole('admin'), async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: 'Missing farm id parameter' });
+    }
+    const pastures = await farmController.getFarmWithPasturesAndFeedingRecords(id);
+    res.json({ status: 200, data: pastures });
+  } catch (error) {
+    const { status, message } = handleError(error);
+    res.status(status).json({ message });
+  }
+});
+
 router.get('/:id', requireRole('admin'), async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

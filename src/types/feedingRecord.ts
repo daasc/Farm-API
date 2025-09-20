@@ -10,6 +10,10 @@ export interface FeedingRecord {
   createdAt: Date;
   updatedAt: Date;
   recordedAt: Date;
+  dataInicio?: Date;
+  dataFim?: Date;
+  categoria?: string;
+  abastecimentoKg?: number;
   pasture?: Pasture;
 }
 
@@ -20,4 +24,8 @@ export interface FeedingRecordInput {
   consumptionPercentPV: number;
   pastureId: string;
   recordedAt: Date;
+  dataInicio?: Date;
+  dataFim?: Date;
+  categoria?: string;
+  abastecimentoKg?: number;
 }

@@ -35,7 +35,7 @@ router.post('/', requireRole('admin'), async (req: Request, res: Response) => {
       .json({ message: 'Payload inválido', errors: formatZodErrors(parsed.error) });
   }
   try {
-    const pasture = await pastureController.createPasture(parsed.data);
+    const pasture = await pastureController.createPasture(req.body);
     res.status(201).json(pasture);
   } catch (error) {
     const { status, message } = handleError(error);

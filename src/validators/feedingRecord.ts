@@ -21,6 +21,16 @@ export const feedingRecordSchema = z.object({
       message: 'recordedAt deve ser uma data válida',
     }),
   ),
+  dataInicio: z.preprocess(
+    (val) => (typeof val === 'string' ? new Date(val) : val),
+    z.date().optional(),
+  ),
+  dataFim: z.preprocess(
+    (val) => (typeof val === 'string' ? new Date(val) : val),
+    z.date().optional(),
+  ),
+  categoria: z.string().optional(),
+  abastecimentoKg: z.number().optional(),
 });
 
 export type FeedingRecordInput = z.infer<typeof feedingRecordSchema>;

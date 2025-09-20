@@ -9,7 +9,7 @@ class AuthController {
   static tokenHandler(user: any) {
     const role = user.role || 'farm';
     const payload = { id: user.id, role };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
     const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
     return { token, refreshToken };
   }

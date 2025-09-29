@@ -49,7 +49,7 @@ class AdminController {
         },
       });
       return admin;
-    } catch (error) {
+    } catch (error: any) {
       console.log('error:', error);
       console.error(error);
       if (error.code === 'P2025') {
@@ -61,7 +61,7 @@ class AdminController {
   static tokenHandler(user: any) {
     const role = user.role || 'farm';
     const payload = { id: user.id, role };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
     const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
       expiresIn: '7d',
     });
@@ -74,7 +74,7 @@ class AdminController {
       if (existingAdmin) return { status: 409, message: 'Email already in use' };
       const passwordHash = await hashPassword(password);
       const user = await prisma.admin.create({
-        data: { name, email, passwordHash, role: 'admin' },
+        data: { name: name ?? '', email, passwordHash, role: 'admin' },
       });
       return AdminController.tokenHandler(user);
     } catch (error) {
@@ -106,8 +106,8 @@ class AdminController {
       const where = search
         ? {
             OR: [
-              { name: { contains: search, mode: 'insensitive' } },
-              { email: { contains: search, mode: 'insensitive' } },
+              { name: { contains: search, mode: 'insensitive' as const } },
+              { email: { contains: search, mode: 'insensitive' as const } },
             ],
           }
         : {};

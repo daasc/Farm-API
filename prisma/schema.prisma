@@ -1,3 +1,44 @@
+model HistoryPasture {
+  id                String   @id @default(uuid())
+  pastureId         String
+  updatedAt         DateTime @default(now())
+  AEF               Float
+  animalsTotal      Int
+  UA                Float
+  stockingRate      Float
+  feedBunkOffer     Float
+  occupation        Boolean
+  UAExtra           Float
+  stockingRateExtra Float
+  deficit           Float
+  name              String
+  area              Float
+  percentAEF        Float
+  vacas             Int
+  vacasWeight       Float
+  bezerros          Int
+  bezerrosWeight    Float
+  novilha           Int
+  novilhaWeight     Float
+  touro             Int
+  touroWeight       Float
+  gabarro           Int
+  gabarroWeight     Float
+  tropa             Int
+  tropaWeight       Float
+  bois              Int
+  boisWeight        Float
+  animals           Int
+  weight            Float
+  cocho             Float
+  demand            Float
+  observation       String?
+  pesoCat           Float?
+  category          String
+  createdAt         DateTime
+  changes           Json
+  pasture           Pasture  @relation(fields: [pastureId], references: [id])
+}
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -77,6 +118,7 @@ model Pasture {
   updatedAt    DateTime @updatedAt
   farm         Farm     @relation(fields: [farmId], references: [id])
   feedingRecords FeedingRecord[]
+  historyPastures HistoryPasture[]
 }
 
 model FeedingRecord {

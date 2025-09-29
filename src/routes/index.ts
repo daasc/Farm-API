@@ -4,6 +4,7 @@ import admin from './admin/index.js';
 import farm from './farms/index.js';
 import pasture from './pastures/index.js';
 import feedingRecords from './feedingRecords/index.js';
+import historyPasture from './historyPasture/index.js';
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.use('/admin', admin);
 router.use('/farm', farm);
 router.use('/pasture', pasture);
 router.use('/feeding-records', feedingRecords);
+router.use('/history-pasture', historyPasture);
 
 // Adicione outros router.use conforme necessário
 

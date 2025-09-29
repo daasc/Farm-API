@@ -1,0 +1,46 @@
+-- CreateTable
+CREATE TABLE "public"."HistoryPasture" (
+    "id" TEXT NOT NULL,
+    "pastureId" TEXT NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "AEF" DOUBLE PRECISION NOT NULL,
+    "animalsTotal" INTEGER NOT NULL,
+    "UA" DOUBLE PRECISION NOT NULL,
+    "stockingRate" DOUBLE PRECISION NOT NULL,
+    "feedBunkOffer" DOUBLE PRECISION NOT NULL,
+    "occupation" BOOLEAN NOT NULL,
+    "UAExtra" DOUBLE PRECISION NOT NULL,
+    "stockingRateExtra" DOUBLE PRECISION NOT NULL,
+    "deficit" DOUBLE PRECISION NOT NULL,
+    "name" TEXT NOT NULL,
+    "area" DOUBLE PRECISION NOT NULL,
+    "percentAEF" DOUBLE PRECISION NOT NULL,
+    "vacas" INTEGER NOT NULL,
+    "vacasWeight" DOUBLE PRECISION NOT NULL,
+    "bezerros" INTEGER NOT NULL,
+    "bezerrosWeight" DOUBLE PRECISION NOT NULL,
+    "novilha" INTEGER NOT NULL,
+    "novilhaWeight" DOUBLE PRECISION NOT NULL,
+    "touro" INTEGER NOT NULL,
+    "touroWeight" DOUBLE PRECISION NOT NULL,
+    "gabarro" INTEGER NOT NULL,
+    "gabarroWeight" DOUBLE PRECISION NOT NULL,
+    "tropa" INTEGER NOT NULL,
+    "tropaWeight" DOUBLE PRECISION NOT NULL,
+    "bois" INTEGER NOT NULL,
+    "boisWeight" DOUBLE PRECISION NOT NULL,
+    "animals" INTEGER NOT NULL,
+    "weight" DOUBLE PRECISION NOT NULL,
+    "cocho" DOUBLE PRECISION NOT NULL,
+    "demand" DOUBLE PRECISION NOT NULL,
+    "observation" TEXT,
+    "pesoCat" DOUBLE PRECISION,
+    "category" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL,
+    "changes" JSONB NOT NULL,
+
+    CONSTRAINT "HistoryPasture_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "public"."HistoryPasture" ADD CONSTRAINT "HistoryPasture_pastureId_fkey" FOREIGN KEY ("pastureId") REFERENCES "public"."Pasture"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

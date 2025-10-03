@@ -7,7 +7,6 @@ class FarmController {
   async createFarm(data: FarmInput) {
     try {
       const { password, email, ...farmDataWithoutAdmin } = data;
-
       const existingFarm = await prisma.farm.findUnique({ where: { email } });
       if (existingFarm) {
         throw { status: 400, message: 'Já existe uma fazenda cadastrada com este email.' };

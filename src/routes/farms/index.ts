@@ -5,7 +5,7 @@ import FarmController from '../../controllers/farmController.js';
 import { handleError } from '../../utils/errorUtils.js';
 import { authenticateToken } from '../../middlewares/auth.js';
 import { requireRole } from '../../middlewares/roles.js';
-import { farmSchema } from '../../validators/farm.js';
+import { FarmInputSchema } from '../../validators/farm.js';
 import { formatZodErrors } from '../../utils/formatZodErrors.js';
 
 const router = Router();
@@ -16,7 +16,7 @@ router.use(authenticateToken);
 router.post('/', requireRole('admin'), async (req: Request, res: Response) => {
   try {
     const { body } = req;
-    const parsed = farmSchema.safeParse(body);
+    const parsed = FarmInputSchema.safeParse(body);
     if (!parsed.success) {
       return res
         .status(400)

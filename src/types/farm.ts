@@ -1,4 +1,5 @@
 import type { Admin } from '@prisma/client';
+export type FarmType = 'CRIA' | 'RECRIA' | 'ENGORDA' | 'CICLO_COMPLETO';
 
 export interface FarmData {
   id?: string;
@@ -9,6 +10,7 @@ export interface FarmData {
   createdAt?: Date;
   updatedAt?: Date;
   adminId: string;
+  types: FarmType[];
   admin?: Admin;
 }
 
@@ -18,4 +20,5 @@ export interface FarmInput {
   email: string;
   password: string;
   adminId: string;
+  types: FarmType[];
 }

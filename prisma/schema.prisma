@@ -1,3 +1,12 @@
+model Product {
+  id               String   @id @default(uuid())
+  name             String
+  category         String
+  consumptionLevel Float
+  feedBunkSpacing  Float
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
 model HistoryPasture {
   id                String   @id @default(uuid())
   pastureId         String
@@ -136,3 +145,4 @@ model FeedingRecord {
   recordedAt         DateTime
   pasture            Pasture  @relation(fields: [pastureId], references: [id])
 }
+

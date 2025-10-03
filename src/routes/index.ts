@@ -5,6 +5,7 @@ import farm from './farms/index.js';
 import pasture from './pastures/index.js';
 import feedingRecords from './feedingRecords/index.js';
 import historyPasture from './historyPasture/index.js';
+import product from './product/index.js';
 
 const router = Router();
 
@@ -18,6 +19,7 @@ router.use('/farm', farm);
 router.use('/pasture', pasture);
 router.use('/feeding-records', feedingRecords);
 router.use('/history-pasture', historyPasture);
+router.use('/product', product);
 
 // Adicione outros router.use conforme necessário
 

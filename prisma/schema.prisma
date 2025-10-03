@@ -1,3 +1,9 @@
+enum FarmType {
+  CRIA
+  RECRIA
+  ENGORDA
+  CICLO_COMPLETO
+}
 model HistoryPasture {
   id                String   @id @default(uuid())
   pastureId         String
@@ -76,6 +82,7 @@ model Farm {
   adminId      String
   admin        Admin    @relation(fields: [adminId], references: [id])
   pastures     Pasture[]
+  types        FarmType[]
 }
 
 model Pasture {
@@ -113,7 +120,7 @@ model Pasture {
   demand       Float    @default(0.05)
   observation  String?
   pesoCat      Float?
-  category     String
+  category     Json
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   farm         Farm     @relation(fields: [farmId], references: [id])
@@ -132,6 +139,7 @@ model FeedingRecord {
   daysUsed           Int
   feedKg             Float
   consumptionPercentPV Float
+  mes                String?
   createdAt          DateTime @default(now())
   recordedAt         DateTime
   pasture            Pasture  @relation(fields: [pastureId], references: [id])

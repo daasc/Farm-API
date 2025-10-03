@@ -25,7 +25,12 @@ export const pastureSchema = z.object({
   demand: z.number().min(0, 'demand deve ser numérico').default(0.05),
   observation: z.string().optional(),
   pesoCat: z.number().optional(),
-  category: z.string().min(1, 'Categoria é obrigatória'),
+  category: z.array(z.object({
+    name: z.string().min(1, 'Nome da categoria é obrigatório'),
+    quantity: z.number().refine(val => val !== undefined && val !== null, {
+      message: 'Quantidade é obrigatória',
+    }),
+  })).min(1, 'Ao menos uma categoria é obrigatória'),
 });
 
 export type PastureInput = z.infer<typeof pastureSchema>;

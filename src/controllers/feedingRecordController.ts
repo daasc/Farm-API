@@ -9,6 +9,7 @@ class FeedingRecordController {
       const record = await prisma.feedingRecord.create({ data });
       return { message: 'FeedingRecord created successfully', data: record };
     } catch (error) {
+      console.log('Error creating FeedingRecord:', error);
       throw handleError(error);
     }
   }

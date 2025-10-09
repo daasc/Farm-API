@@ -4,6 +4,7 @@ import ProductController from '../../controllers/productController.js';
 import { ProductInputSchema } from '../../validators/product.js';
 import { handleError } from '../../utils/errorUtils.js';
 import { formatZodErrors } from '../../utils/formatZodErrors.js';
+import { handleParams } from '../../utils/handleParams.js';
 
 const router = Router();
 const controller = new ProductController();
@@ -28,9 +29,16 @@ router.post('/', async (req: Request, res: Response) => {
 // GET ALL
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const result = await controller.getAllProducts();
+    const { page, pageSize, search, sortBy, sortOrder } = handleParams(req.query);
+    const result = await controller.getAllProducts({
+      page,
+      pageSize,
+      search,
+      sortOrder,
+    });
     res.json(result);
   } catch (error) {
+    console.error(error);
     const { status, message } = handleError(error);
     res.status(status).json({ message });
   }

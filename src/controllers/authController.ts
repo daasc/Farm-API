@@ -23,7 +23,15 @@ class AuthController {
       if (!user) throw { status: 401, message: 'Invalid credentials' };
       const valid = await comparePassword(password, user.passwordHash);
       if (!valid) throw { status: 401, message: 'Invalid credentials' };
-      return AuthController.tokenHandler(user);
+      const token = AuthController.tokenHandler(user);
+
+      return {
+        role: user.role || 'user',
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        ...token,
+      };
     } catch (error) {
       throw handleError(error);
     }
@@ -40,6 +48,15 @@ class AuthController {
       return { token };
     } catch (error) {
       throw handleError(error);
+    }
+  }
+
+  async isTokenValid(token: string, secret: string): Promise<boolean> {
+    try {
+      jwt.verify(token, secret);
+      return true;
+    } catch (err) {
+      return false;
     }
   }
 }

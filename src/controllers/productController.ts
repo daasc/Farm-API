@@ -12,10 +12,52 @@ class ProductController {
     }
   }
 
-  async getAllProducts() {
+  async getAllProducts({
+    page = 1,
+    pageSize = 10,
+    search = '',
+    sortBy = 'name',
+    sortOrder = 'asc',
+  }: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    sortBy?: keyof ProductInput;
+    sortOrder?: 'asc' | 'desc';
+  } = {}) {
     try {
-      const products = await prisma.product.findMany({ orderBy: { name: 'asc' } });
-      return { message: 'Products retrieved successfully', data: products };
+      const skip = (page - 1) * pageSize;
+      const where = search
+        ? {
+            OR: [
+              { name: { contains: search, mode: 'insensitive' } },
+              { category: { contains: search, mode: 'insensitive' } },
+            ],
+          }
+        : {};
+
+      console.log('search:', search, 'where:', where);
+
+      const [products, total] = await Promise.all([
+        prisma.product.findMany({
+          where,
+          orderBy: { [sortBy]: sortOrder },
+          skip,
+          take: pageSize,
+        }),
+        prisma.product.count({ where }),
+      ]);
+
+      return {
+        message: 'Products retrieved successfully',
+        data: products,
+        pagination: {
+          page,
+          pageSize,
+          total,
+          totalPages: Math.ceil(total / pageSize),
+        },
+      };
     } catch (error) {
       throw handleError(error);
     }

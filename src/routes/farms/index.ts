@@ -7,6 +7,7 @@ import { authenticateToken } from '../../middlewares/auth.js';
 import { requireRole } from '../../middlewares/roles.js';
 import { FarmInputSchema } from '../../validators/farm.js';
 import { formatZodErrors } from '../../utils/formatZodErrors.js';
+import { handleParams } from '../../utils/handleParams.js';
 
 const router = Router();
 const farmController = new FarmController();
@@ -15,14 +16,15 @@ router.use(authenticateToken);
 
 router.post('/', requireRole('admin'), async (req: Request, res: Response) => {
   try {
-    const { body } = req;
+    const { body, user } = req;
     const parsed = FarmInputSchema.safeParse(body);
     if (!parsed.success) {
       return res
         .status(400)
         .json({ message: 'Payload inválido', errors: formatZodErrors(parsed.error) });
     }
-    const farm = await farmController.createFarm(body);
+    // adminId do token
+    const farm = await farmController.createFarm({ ...body, adminId: user.id });
     res.json({ status: 200, data: farm });
   } catch (error) {
     const { status, message } = handleError(error);
@@ -32,10 +34,15 @@ router.post('/', requireRole('admin'), async (req: Request, res: Response) => {
 
 router.get('/', requireRole('admin'), async (req: Request, res: Response) => {
   try {
-    const { query } = req;
-
-    const farms = await farmController.getAllFarms(query);
-    res.json({ status: 200, data: farms });
+    const { page, pageSize, search, sortBy, sortOrder } = handleParams(req.query);
+    const farms = await farmController.getAllFarms({
+      page,
+      pageSize,
+      search,
+      sortBy,
+      sortOrder,
+    });
+    res.json(farms);
   } catch (error) {
     const { status, message } = handleError(error);
     res.status(status).json({ message });

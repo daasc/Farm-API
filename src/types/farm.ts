@@ -11,6 +11,7 @@ export interface FarmData {
   updatedAt?: Date;
   adminId: string;
   types: FarmType[];
+  active?: boolean;
   admin?: Admin;
 }
 
@@ -21,4 +22,5 @@ export interface FarmInput {
   password: string;
   adminId: string;
   types: FarmType[];
+  active?: boolean;
 }

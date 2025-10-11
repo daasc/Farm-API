@@ -77,6 +77,11 @@ class FarmController {
             id: true,
             name: true,
             email: true,
+            location: true,
+            role: true,
+            types: true,
+            active: true,
+
             // add other fields you want to return
             createdAt: true,
             updatedAt: true,
@@ -96,6 +101,7 @@ class FarmController {
         },
       };
     } catch (error) {
+      console.log(error);
       throw handleError(error);
     }
   }

@@ -6,6 +6,7 @@ import { formatZodErrors } from '../../utils/formatZodErrors.js';
 import { authenticateToken } from '../../middlewares/auth.js';
 import { requireRole } from '../../middlewares/roles.js';
 import { handleError } from '../../utils/errorUtils.js';
+import { handleParams } from '../../utils/handleParams.js';
 
 const router = Router();
 const pastureController = new PastureController();
@@ -45,7 +46,19 @@ router.post('/', requireRole('admin'), async (req: Request, res: Response) => {
 
 router.get('/', requireRole('admin'), async (req: Request, res: Response) => {
   try {
-    const pastures = await pastureController.getAllPastures(req.query);
+    const { page, pageSize, search, sortBy, sortOrder } = handleParams(req.query);
+    const farmId = req.query.farmId as string | undefined;
+    const query: any = {
+      page,
+      pageSize,
+      search,
+      sortBy,
+      sortOrder,
+    };
+    if (farmId !== undefined) {
+      query.farmId = farmId;
+    }
+    const pastures = await pastureController.getAllPastures(query);
     res.json(pastures);
   } catch (error) {
     const { status, message } = handleError(error);

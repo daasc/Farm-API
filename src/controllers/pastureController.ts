@@ -12,7 +12,6 @@ class PastureController {
     try {
       const derived = calculatePastureDerivedFields(payload);
       const pasture = await prisma.pasture.create({ data: { ...payload, ...derived } });
-
       return { message: 'Pasture created successfully', data: pasture };
     } catch (error) {
       throw handleError(error);
@@ -33,7 +32,7 @@ class PastureController {
     }
   }
 
-  async getAllPastures(query: ListQuery) {
+  async getAllPastures(query: ListQuery & { farmId?: string }) {
     try {
       const {
         page = 1,
@@ -41,10 +40,14 @@ class PastureController {
         search,
         sortBy = 'name',
         sortOrder = 'asc',
+        farmId,
         ...filters
       } = query;
 
       const where: any = { ...filters };
+      if (farmId) {
+        where.farmId = farmId;
+      }
       if (search) {
         where.OR = [{ name: { contains: search, mode: 'insensitive' } }];
       }

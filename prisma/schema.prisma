@@ -51,7 +51,7 @@ model HistoryPasture {
   demand            Float
   observation       String?
   pesoCat           Float?
-  category          String
+    category          Json
   createdAt         DateTime
   changes           Json
   pasture           Pasture  @relation(fields: [pastureId], references: [id])

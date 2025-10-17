@@ -58,6 +58,7 @@ class PastureController {
         skip: (page - 1) * pageSize,
         take: pageSize,
         orderBy: { [sortBy]: sortOrder },
+        include: { farm: { select: { name: true } } }, // Inclui o nome do farm
       });
 
       return {
